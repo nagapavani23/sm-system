@@ -25,7 +25,7 @@ pipeline {
         stage('Deploy to AKS') {
             steps {
                 // Use secret text credential for Azure SP JSON
-                withCredentials([string(credentialsId: 'azure-sp', variable: 'AZURE_SP_JSON')]) {
+                withCredentials([string(credentialsId: 'azure-sp-sdk-auth', variable: 'AZURE_SP_JSON')]) {
                     sh '''
                     echo $AZURE_SP_JSON > sp.json
                     az login --service-principal --sdk-auth --username sp.json
