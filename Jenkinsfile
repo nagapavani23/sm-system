@@ -7,12 +7,12 @@ pipeline {
     stages {
         stage('Build Backend') {
             steps {
-                sh 'docker build -t $REGISTRY/student-backend:latest backend'
+                sh 'docker build -t $REGISTRY/student-backend:latest -f backend/Dockerfile backend'
             }
         }
         stage('Build Frontend') {
             steps {
-                sh 'docker build -t $REGISTRY/student-frontend:latest frontend'
+                sh 'docker build -t $REGISTRY/student-frontend:latest -f frontend/Dockerfile frontend'
             }
         }
         stage('Push Images') {
