@@ -2,7 +2,6 @@ pipeline {
     agent any
     environment {
         DOCKER_CREDS = credentials('dockerhub-creds')
-        AZURE_CRED = credentials('azure-sp')
         REGISTRY = "${DOCKER_CREDS_USR}"
     }
     stages {
@@ -25,11 +24,15 @@ pipeline {
         }
         stage('Deploy to AKS') {
             steps {
-                sh '''
-                az login --service-principal -u $AZURE_CRED_USR -p $AZURE_CRED_PSW --tenant <tenant-id>
-                az aks get-credentials --resource-group pavani --name webapp
-                kubectl apply -f k8s/
-                '''
+                // Use secret text credential for Azure SP JSON
+                withCredentials([string(credentialsId: 'azure-sp', variable: 'AZURE_SP_JSON')]) {
+                    sh '''
+                    echo $AZURE_SP_JSON > sp.json
+                    az login --service-principal --sdk-auth --username sp.json
+                    az aks get-credentials --resource-group pavani --name webapp
+                    kubectl apply -f k8s/
+                    '''
+                }
             }
         }
     }
