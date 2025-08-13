@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend-deployment
+  labels:
+    app: student-frontend
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: student-frontend
+  template:
+    metadata:
+      labels:
+        app: student-frontend
+    spec:
+      containers:
+      - name: student-frontend
+        image: nagapavani2301/student-frontend:latest
+        ports:
+        - containerPort: 80
+---
